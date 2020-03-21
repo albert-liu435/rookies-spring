@@ -43,6 +43,16 @@
             <mvc:mapping path="/**"/>
             <bean class="com.rookie.bigdata.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
+        <!--性能拦截器-->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.rookie.bigdata.interceptor.TimeSpendInterceptor"/>
+        </mvc:interceptor>
+        <!--记录请求日志-->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.rookie.bigdata.interceptor.LogInterceptor"/>
+        </mvc:interceptor>
     </mvc:interceptors>
 
 
