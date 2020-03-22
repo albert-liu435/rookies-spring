@@ -10,6 +10,7 @@
     <modules>
         <module>rookies-mvc-interceptor</module>
         <module>rookie-spring-beans</module>
+        <module>rookie-mvc-helloworld</module>
     </modules>
     <packaging>pom</packaging>
 
