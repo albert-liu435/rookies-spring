@@ -28,6 +28,7 @@ public class SpringAware implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     
+    //Spring容器会将ApplicationContext对象传入过来
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         System.out.println("传入的IOC容器applicationContext = [" + applicationContext + "]");

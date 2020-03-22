@@ -6,6 +6,7 @@ import com.rookie.bigdata.domain.User2;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.StandardEnvironment;
 
 import static org.junit.Assert.*;
 
@@ -37,6 +38,13 @@ public class SpringAwareTest {
 
         User2 user2=(User2)applicationContext.getBean("user2");
         System.out.println(user2);
+    }
+
+    @Test
+    public void test3(){
+        StandardEnvironment standardEnvironment=new StandardEnvironment();
+        System.out.println(standardEnvironment);
+
     }
 
 
