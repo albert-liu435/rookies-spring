@@ -424,16 +424,71 @@ protected WebApplicationContext initWebApplicationContext() {
 	return wac;
 }
 ```
-FrameworkServlet的onApplicationEvent()方法
+FrameworkServlet的createWebApplicationContext(rootContext);
 
 ```java
-public void onApplicationEvent(ContextRefreshedEvent event) {
-	this.refreshEventReceived = true;
-	synchronized (this.onRefreshMonitor) {
-		onRefresh(event.getApplicationContext());
+protected WebApplicationContext createWebApplicationContext(@Nullable ApplicationContext parent) {
+    //获取创建类型
+	Class<?> contextClass = getContextClass();
+    //检查创建类型
+	if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
+		throw new ApplicationContextException(
+				"Fatal initialization error in servlet with name '" + getServletName() +
+				"': custom WebApplicationContext class [" + contextClass.getName() +
+				"] is not of type ConfigurableWebApplicationContext");
 	}
+    //创建ConfigurableWebApplicationContext
+	ConfigurableWebApplicationContext wac =
+			(ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
+
+	wac.setEnvironment(getEnvironment());
+	wac.setParent(parent);
+	String configLocation = getContextConfigLocation();
+    //将设置的contextConfigLocation参数传给wac,默认传入的是WEB-INFO/[ServletName]-Servlet.xml
+	if (configLocation != null) {
+		wac.setConfigLocation(configLocation);
+	}
+	configureAndRefreshWebApplicationContext(wac);
+
+	return wac;
 }
 ```
+configureAndRefreshWebApplicationContext(wac);方法
+
+
+
+		protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicationContext wac) {
+			if (ObjectUtils.identityToString(wac).equals(wac.getId())) {
+				// The application context id is still set to its original default value
+				// -> assign a more useful id based on available information
+				if (this.contextId != null) {
+					wac.setId(this.contextId);
+				}
+				else {
+					// Generate default id...
+					wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +
+							ObjectUtils.getDisplayString(getServletContext().getContextPath()) + '/' + getServletName());
+				}
+			}
+		wac.setServletContext(getServletContext());
+		wac.setServletConfig(getServletConfig());
+		wac.setNamespace(getNamespace());
+		//添加监听ContextRefreshedEvent的监听器，当接收到消息时调用FrameworkServlet的onApplicationEvent()方法，最终调用 DispatcherServlet的onRefresh方法
+		wac.addApplicationListener(new SourceFilteringListener(wac, new ContextRefreshListener()));
+	
+		// The wac environment's #initPropertySources will be called in any case when the context
+		// is refreshed; do it eagerly here to ensure servlet property sources are in place for
+		// use in any post-processing or initialization that occurs below prior to #refresh
+		ConfigurableEnvironment env = wac.getEnvironment();
+		if (env instanceof ConfigurableWebEnvironment) {
+			((ConfigurableWebEnvironment) env).initPropertySources(getServletContext(), getServletConfig());
+		}
+	
+		postProcessWebApplicationContext(wac);
+		applyInitializers(wac);
+		wac.refresh();
+	}
+DispatcherServlet的onRefresh方法
 
 ```java
 protected void onRefresh(ApplicationContext context) {

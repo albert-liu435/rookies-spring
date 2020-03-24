@@ -4,6 +4,11 @@ import com.rookie.bigdata.service.HelloService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -40,7 +45,7 @@ public class HelloController implements Controller {
         mv.setViewName("/index.jsp");
         // 返回ModelAndView对象。
         System.out.println(helloService);
-
+        helloService.requestContextHolder();
 
         return mv;
     }
