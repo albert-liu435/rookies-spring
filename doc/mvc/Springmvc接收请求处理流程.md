@@ -1,4 +1,29 @@
+SpringMVC接受请求的处理流程
+
+
+
+![springmvc](.\pic\springmvc.png)
+
+1. 用户向服务端发送请求，请求被前端控制器DispatcherServlet截获
+2. DispatcherServlet对请求的URL进行解析，得到URI,然后根据URI调用HandlerMapper获取该Handler配置的所有相关的对象，包括Handler对象以及Handler对象对应的拦截器，这些对象会被封装到一个 HandlerExecutionChain对象中返回
+3. DispatcherServlet根据获得的Handler，选择一个合适的HandlerAdapter，HandlerAdapter会处理多种handler，调用handler实际处理请求的方法
+4. 提取请求中的数据模型，开始执行Handler（Controller），在填充Handler的入参过程中根据配置，Spring做了一些如下工作
+   1. 消息转换。将请求消息（如JSON,XML等数据）转换成一个对象，将对象转换为指定的响应消息
+   2. 数据转换 。 对请求消息进行数据转换，如String转换为Integer，Double等
+   3. 数据格式化。对请求消息进行格式化。如将字符串转换为格式化数字或格式化日期
+   4. 数据验证。验证数据的有效性，验证结果存储在BindingResult或Error中
+5. handler执行完之后，向DispatcherServlet返回一个ModelAndVIew对象,ModelAndVIew对象中应该包含视图名或视图名和模型
+6. 根据返回的ModelAndView对象那个，选择一个合适的ViewResolver（视图解析器），返回给DispatcherServlet
+7. ViewResolver结合Model和View来渲染视图
+8. 将视图渲染结果返回给客户端
+
 Springmvc接收请求源码分析
+
+DispatcherServlet继承体系
+
+![DispatcherServlet](.\pic\DispatcherServlet.png)
+
+关于EnvironmentAware，EnvironmentCapable和ApplicationContextAware的作用可以参考 [https://www.cnblogs.com/haizhilangzi/p/12610152.html]( https://www.cnblogs.com/haizhilangzi/p/12610152.html ) 
 
 首先http请求到达FrameworkServlet中的service方法
 

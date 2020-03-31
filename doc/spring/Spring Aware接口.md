@@ -116,3 +116,5 @@ spring-aware.xml
 
 ```
 
+源码 [github](https://github.com/albert-liu435/rookies-spring/tree/master/rookie-spring-beans/src/main/java/com/rookie/bigdata/aware ) 
+
