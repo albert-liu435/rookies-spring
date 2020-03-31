@@ -12,11 +12,12 @@
                     http://www.springframework.org/schema/context
                     http://www.springframework.org/schema/context/spring-context.xsd">
 
-<bean id="user" class="com.rookie.bigdata.domain.User">
-    <property name="username" value="张三"></property>
-    <property name="address" value="北京"></property>
-</bean>
+    <bean id="user" class="com.rookie.bigdata.domain.User">
+        <property name="username" value="张三"></property>
+        <property name="address" value="北京"></property>
+    </bean>
 
-<bean id="springAware" class="com.rookie.bigdata.aware.SpringAware"></bean>
+    <bean id="springAware" class="com.rookie.bigdata.aware.SpringAware"></bean>
 
+    <bean id="springsEnvironment" class="com.rookie.bigdata.aware.SpringEnvironment"></bean>
 </beans>

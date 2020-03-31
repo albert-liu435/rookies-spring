@@ -6,6 +6,7 @@ import com.rookie.bigdata.domain.User2;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
 
 import static org.junit.Assert.*;
@@ -22,6 +23,8 @@ public class SpringAwareTest {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/aware/spring-aware.xml");
 //        User user = (User) applicationContext.getBean("user");
 //        System.out.println(user);
+        SpringEnvironment springsEnvironment = (SpringEnvironment)applicationContext.getBean("springsEnvironment");
+        Environment environment = springsEnvironment.getEnvironment();
 
         SpringAware springAware = (SpringAware) applicationContext.getBean("springAware");
         ApplicationContext applicationContext1 = springAware.getApplicationContext();
@@ -32,6 +35,8 @@ public class SpringAwareTest {
     @Test
     public void test2(){
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/aware/spring-beanaware.xml");
+
+
 
         User1 user1=(User1)applicationContext.getBean("user1");
         System.out.println(user1);
