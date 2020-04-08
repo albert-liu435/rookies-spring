@@ -51,6 +51,8 @@ protected final void doGet(HttpServletRequest request, HttpServletResponse respo
 	processRequest(request, response);
 }
 ```
+processRequest方法：首先获取LocaleContextHolder和RequestContextHolder中原来保存的LocaleContext和RequestAttributes并设置到previousLocaleContext和previousAttributes临时属性，然后调用buildLocaleContext和buildRequestAttributes方法获取当前请求的LocaleContext和RequestAttributes，并通过initContextHolders方法将它们设置到LocaleContextHolder和RequestContextHolder中，接着使用request拿到异步处理管理器并设置了拦截器，然后调用doService方法。
+
 ```java
 protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
@@ -96,8 +98,6 @@ protected final void processRequest(HttpServletRequest request, HttpServletRespo
 }
 ```
 DispatcherServlet中的doService()方法
-
-
 
 ```java
 protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {

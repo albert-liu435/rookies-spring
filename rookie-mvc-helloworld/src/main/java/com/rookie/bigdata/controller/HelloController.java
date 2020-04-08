@@ -45,6 +45,7 @@ public class HelloController implements Controller {
         mv.setViewName("/index.jsp");
         // 返回ModelAndView对象。
         System.out.println(helloService);
+
         helloService.requestContextHolder();
 
         return mv;
