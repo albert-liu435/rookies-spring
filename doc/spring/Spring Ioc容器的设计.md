@@ -22,7 +22,7 @@ Spring为BeanFactory提供了很多的实现类，如图
 
 #### BeanFactory的Bean的生命周期
 
-![BeanFactory](C:\work\IDEAWorkSpace\github\Spring\spring\BeanFactory.svg)
+![BeanFactory](.\pic\BeanFactory.png)
 
 具体过程
 
