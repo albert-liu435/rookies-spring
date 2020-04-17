@@ -15,7 +15,11 @@ public class ResourceMain {
 
     public static void main(String[] args) throws Exception{
 
-        Resource resource=new ClassPathResource("resource.conf.txt");
+        //Resource resource=new ClassPathResource("resource/conf.txt",Thread.currentThread().getContextClassLoader());
+
+        // Resource resource=new ClassPathResource("resource/conf.txt",ResourceMain.class.getClassLoader());
+
+        Resource resource=new ClassPathResource("resource/conf.txt");
 
         InputStream inputStream = resource.getInputStream();
         ByteArrayOutputStream bts=new ByteArrayOutputStream();
@@ -26,5 +30,10 @@ public class ResourceMain {
 
         System.out.println(bts.toString());
         System.out.println(resource);
+        System.out.println(resource.getURI());
+        System.out.println(resource.getURL());
+        System.out.println(resource.getDescription());
+        System.out.println(resource.getFile());
+        System.out.println(resource.getFilename());
     }
 }
