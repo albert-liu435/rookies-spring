@@ -3,6 +3,7 @@ package com.rookie.bigdata.annotation;
 import com.rookie.bigdata.domain.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author rookie
@@ -13,9 +14,13 @@ public class AnnotationMain {
 
     public static void main(String[] args) {
 
-        ApplicationContext applicationContext=new AnnotationConfigApplicationContext(Config.class);
-        User user=(User)applicationContext.getBean("user");
-        System.out.println(user);
+//        ApplicationContext applicationContext=new AnnotationConfigApplicationContext(Config.class);
+//        User user=(User)applicationContext.getBean("user");
+//        System.out.println(user);
+
+
+        ApplicationContext applicationContext=new ClassPathXmlApplicationContext("annotation/bean.xml");
+
     }
 
 }
