@@ -1,13 +1,14 @@
-Spring ClassPathResource
+### Spring ClassPathResource
 
- org.springframework.core.io.ClassPathResource位于Spring核心core下，用以表达类路径下的资源 。
+ ClassPathResource用于加载资源文件，如果类路径资源文件位于文件系统中，支持解析为File,但是不用于JAR中的资源。
+
+org.springframework.core.io.ClassPathResource位于Spring核心core下，用以表达类路径下的资源 。
 
 其继承实现关系如下图：
 
 ![ClassPathResource](.\pic\ClassPathResource.png)
 
-  ClasspathResource类的属性变量和构造方法如下 
-
+  ClasspathResource类的主要属性变量和构造方法如下 
 
 ```java
 //资源文件路径
@@ -18,133 +19,38 @@ private ClassLoader classLoader;
 //通过Class类加载资源文件
 @Nullable
 private Class<?> clazz;
-//通过类路径创建ClassPathResource对象
-public ClassPathResource(String path) {
-	this(path, (ClassLoader) null);
-}
+```
+通过资源路径和classLoader创建ClassPathResource对象，classLoader默认为null
 
-//通过类路径和classLoader创建ClassPathResource对象
+```java
 public ClassPathResource(String path, @Nullable ClassLoader classLoader) {
 	Assert.notNull(path, "Path must not be null");
+    //规范会配置文件路径
 	String pathToUse = StringUtils.cleanPath(path);
 	if (pathToUse.startsWith("/")) {
 		pathToUse = pathToUse.substring(1);
 	}
 	this.path = pathToUse;
+    //获取类加载器
 	this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
 }
+```
+关于StringUtils，可以参考： [Spring中的SpringUtils](Spring中的SpringUtils.md) 
+
+```java
 
 // 通过类路径和给定的Class类创建ClassPathResource对象
 public ClassPathResource(String path, @Nullable Class<?> clazz) {
 	Assert.notNull(path, "Path must not be null");
+    //规范化资源文件路径
 	this.path = StringUtils.cleanPath(path);
 	this.clazz = clazz;
 }
 
-// 通过类路径和给定的ClassLoader或Class创建ClassPathResource对象，这个方法最终会弃用
-@Deprecated
-protected ClassPathResource(String path, @Nullable ClassLoader classLoader, @Nullable Class<?> clazz) {
-	this.path = StringUtils.cleanPath(path);
-	this.classLoader = classLoader;
-	this.clazz = clazz;
-}
+
 ```
-以下面两段代码来查看ClassPathResource的执行过程
 
-```java
-    Resource resource=new ClassPathResource("conf.txt");
-
-    InputStream inputStream = resource.getInputStream();
-```
-最终调用如下方法
-
-```java
-public ClassPathResource(String path, @Nullable ClassLoader classLoader) {
-    //路径不能为空
-	Assert.notNull(path, "Path must not be null");
-	String pathToUse = StringUtils.cleanPath(path);
-    //判断是否以/开头
-	if (pathToUse.startsWith("/")) {
-		pathToUse = pathToUse.substring(1);
-	}
-    //赋值给path
-	this.path = pathToUse;
-    //获取默认的类加载器
-	this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
-}
-```
-cleanPath方法如下
-
-```java
-public static String cleanPath(String path) {
-		if (!hasLength(path)) {
-			return path;
-		}
-	//将windows的 //替换为通用的\
-    String pathToUse = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);	
-	// 文件是否含有.
-	if (pathToUse.indexOf('.') == -1) {
-		return pathToUse;
-	}
-
-	// Strip prefix from path to analyze, to not treat it as part of the
-	// first path element. This is necessary to correctly parse paths like
-	// "file:core/../core/io/Resource.class", where the ".." should just
-	// strip the first "core" directory while keeping the "file:" prefix.
-	int prefixIndex = pathToUse.indexOf(':');
-	String prefix = "";
-	if (prefixIndex != -1) {
-		prefix = pathToUse.substring(0, prefixIndex + 1);
-		if (prefix.contains(FOLDER_SEPARATOR)) {
-			prefix = "";
-		}
-		else {
-			pathToUse = pathToUse.substring(prefixIndex + 1);
-		}
-	}
-	if (pathToUse.startsWith(FOLDER_SEPARATOR)) {
-		prefix = prefix + FOLDER_SEPARATOR;
-		pathToUse = pathToUse.substring(1);
-	}
-
-	String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
-	LinkedList<String> pathElements = new LinkedList<>();
-	int tops = 0;
-
-	for (int i = pathArray.length - 1; i >= 0; i--) {
-		String element = pathArray[i];
-		if (CURRENT_PATH.equals(element)) {
-			// Points to current directory - drop it.
-		}
-		else if (TOP_PATH.equals(element)) {
-			// Registering top path found.
-			tops++;
-		}
-		else {
-			if (tops > 0) {
-				// Merging path element with element corresponding to top path.
-				tops--;
-			}
-			else {
-				// Normal path element found.
-				pathElements.add(0, element);
-			}
-		}
-	}
-
-	// Remaining top paths need to be retained.
-	for (int i = 0; i < tops; i++) {
-		pathElements.add(0, TOP_PATH);
-	}
-	// If nothing else left, at least explicitly point to current path.
-	if (pathElements.size() == 1 && "".equals(pathElements.getLast()) && !prefix.endsWith(FOLDER_SEPARATOR)) {
-		pathElements.add(0, CURRENT_PATH);
-	}
-
-	return prefix + collectionToDelimitedString(pathElements, FOLDER_SEPARATOR);
-}
-```
-当调用resource.getInputStream()时，调用如下方法
+getInputStream()方法,为给定的类路径资源打开一个InputStream
 
 ```java
 public InputStream getInputStream() throws IOException {
@@ -168,4 +74,43 @@ public InputStream getInputStream() throws IOException {
 		return is;
 	}
 ```
+
+getURL()：返回底层类路径资源的URL
+
+```java
+@Override
+public URL getURL() throws IOException {
+	URL url = resolveURL();
+	if (url == null) {
+		throw new FileNotFoundException(getDescription() + " cannot be resolved to URL because it does not exist");
+	}
+	return url;
+}
+```
+如下为测试代码：
+
+```java
+
+        //Resource resource=new ClassPathResource("resource/conf.txt",Thread.currentThread().getContextClassLoader());
+
+       // Resource resource=new ClassPathResource("resource/conf.txt",ResourceMain.class.getClassLoader());
+
+        Resource resource=new ClassPathResource("resource/conf.txt");
+
+        InputStream inputStream = resource.getInputStream();
+        ByteArrayOutputStream bts=new ByteArrayOutputStream();
+        int i;
+        while ((i=inputStream.read())!=-1){
+            bts.write(i);
+        }
+
+        System.out.println(bts.toString());
+        System.out.println(resource);
+        System.out.println(resource.getURI());
+        System.out.println(resource.getURL());
+        System.out.println(resource.getDescription());
+        System.out.println(resource.getFile());
+        System.out.println(resource.getFilename());
+```
+相关源码参考： [github](https://github.com/albert-liu435/rookies-spring/blob/master/rookie-spring-io/src/main/java/com/rookie/bigdata/resource/ResourceMain.java ) 
 
