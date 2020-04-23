@@ -157,7 +157,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
 ```
 
-关于ProtocolResolver接口的详细使用，请参考
+关于ProtocolResolver接口的详细使用，请参考 [Spring ProtocolResolver](Spring ProtocolResolver接口.md) 
 
 测试代码
 
