@@ -14,12 +14,12 @@ public class AnnotationMain {
 
     public static void main(String[] args) {
 
-//        ApplicationContext applicationContext=new AnnotationConfigApplicationContext(Config.class);
-//        User user=(User)applicationContext.getBean("user");
-//        System.out.println(user);
+        ApplicationContext applicationContext=new AnnotationConfigApplicationContext(Config.class);
+        User user=(User)applicationContext.getBean("user");
+        System.out.println(user);
 
 
-        ApplicationContext applicationContext=new ClassPathXmlApplicationContext("annotation/bean.xml");
+       // ApplicationContext applicationContext=new ClassPathXmlApplicationContext("annotation/bean.xml");
 
     }
 
