@@ -14,11 +14,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
 
-    @Bean(name = "user")
+    @Bean(name = "user",initMethod ="init" )
     public User buildUser() {
         User user = new User();
         user.setAddress("北京");
         user.setUsername("张三");
         return user;
+    }
+
+
+    public void print() {
+        System.out.println("打印");
     }
 }

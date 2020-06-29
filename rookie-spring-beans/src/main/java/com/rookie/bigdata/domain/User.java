@@ -33,6 +33,12 @@ public class User {
         this.address = address;
     }
 
+
+
+    public void init(){
+        System.out.println("执行初始化方法");
+    }
+
     @Override
     public String toString() {
         return "User{" +
