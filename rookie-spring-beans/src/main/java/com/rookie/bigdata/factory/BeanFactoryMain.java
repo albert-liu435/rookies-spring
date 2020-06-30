@@ -20,7 +20,7 @@ public class BeanFactoryMain {
 
 
         ResourcePatternResolver resolver=new PathMatchingResourcePatternResolver();
-        Resource resource = resolver.getResource("classpath:beanfactory/beans.xml");
+        Resource resource = resolver.getResource("classpath:factory/bean.xml");
 
         DefaultListableBeanFactory factory=new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader=new XmlBeanDefinitionReader(factory);
